@@ -23,6 +23,9 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         </body>
         </html>'''
 
+    @staticmethod
+    def imagetag(link):
+      return f'''<img src="/{link}" alt="" style = "width:50px"></img>'''
 
     # HTTP GET 요청을 처리합니다.
     def do_GET(self):
@@ -33,7 +36,13 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             page = self.htmlBox(self.innerbody["main"])
             self.wfile.write(page.encode('utf-8'))
-            self.wfile.write(f'''<div>파일 리스트 </br> {os.listdir("./filelist")} </div>'''.encode('utf-8'))
+            filelistCheck = os.listdir("./filelist")
+            for i in range(len(filelistCheck)):
+              divtag = "<div>"
+              divtag += self.imagetag(filelistCheck[i].split(".")[1]);
+              divtag += f'''<p>{filelistCheck[i]}</p>'''
+              divtag += '</div>'
+              self.wfile.write(divtag.encode('utf-8'))
             return
 
         # 무언가
